@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { auth, provider } from "../firebase";
-import {
-  getRedirectResult,
-  signInWithPopup,
-  signInWithRedirect,
-} from "firebase/auth";
+import { getRedirectResult, signInWithRedirect } from "firebase/auth";
 
 function SignIn() {
   const [error, setError] = useState<string | null>(null);
