@@ -31,7 +31,7 @@ function SignIn() {
     try {
       // Detect Electron environment and use embedded OAuth if available
       if ((window as any).api?.auth?.loginGoogle && accountId) {
-        const { idToken, profile } = await (window as any).api.auth.loginGoogle(
+        const { idToken } = await (window as any).api.auth.loginGoogle(
           accountId
         );
         setToken(idToken);
