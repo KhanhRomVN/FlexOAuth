@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { auth, provider } from "../firebase";
-import { signInWithPopup } from "firebase/auth";
+import {
+  getRedirectResult,
+  signInWithPopup,
+  signInWithRedirect,
+} from "firebase/auth";
 
 function SignIn() {
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +30,44 @@ function SignIn() {
 
   useEffect(() => {}, [showOpenButton]);
 
+  // Handle Firebase redirect result for Electron OAuth window
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result: any) => {
+        if (result?.user) {
+          return result.user.getIdToken();
+        }
+        throw new Error("No redirect result");
+      })
+      .then((idToken: string) => {
+        setToken(idToken);
+        setShowOpenButton(true);
+      })
+      .catch((err: any) => {
+        console.error("[FlexOAuth] Redirect error:", err);
+        setError(err.message || "Redirect sign-in failed");
+      });
+  }, []);
+
+  // Handle Firebase redirect result for Electron OAuth window
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result: any) => {
+        if (result?.user) {
+          return result.user.getIdToken();
+        }
+        throw new Error("No redirect result");
+      })
+      .then((idToken: string) => {
+        setToken(idToken);
+        setShowOpenButton(true);
+      })
+      .catch((err: any) => {
+        console.error("[FlexOAuth] Redirect error:", err);
+        setError(err.message || "Redirect sign-in failed");
+      });
+  }, []);
+
   const handleSignIn = async () => {
     setLoading(true);
     try {
@@ -37,10 +79,9 @@ function SignIn() {
         setToken(idToken);
         setShowOpenButton(true);
       } else {
-        const result = await signInWithPopup(auth, provider);
-        const idToken = await result.user.getIdToken();
-        setToken(idToken);
-        setShowOpenButton(true);
+        // Fallback: use redirect flow to avoid popup blocking
+        await signInWithRedirect(auth, provider);
+        // Token will be handled in the redirect result effect
       }
     } catch (err: any) {
       console.error("[FlexOAuth] Sign-in error:", err);
