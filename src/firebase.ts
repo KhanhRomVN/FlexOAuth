@@ -10,21 +10,15 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 }
-console.log("[FlexOAuth] firebaseConfig loaded:", firebaseConfig);
 
 const firebaseApp = initializeApp(firebaseConfig)
-console.log("[FlexOAuth] Firebase app initialized:", firebaseApp);
 const auth = getAuth(firebaseApp)
-console.log("[FlexOAuth] Auth instance created:", auth);
 const provider = new GoogleAuthProvider()
-console.log("[FlexOAuth] GoogleAuthProvider instance created:", provider);
 
-onAuthStateChanged(auth, (user) => {
-    console.log("[FlexOAuth] onAuthStateChanged event:", user);
+onAuthStateChanged(auth, () => {
 });
 
-onIdTokenChanged(auth, (user) => {
-    console.log("[FlexOAuth] onIdTokenChanged event:", user);
+onIdTokenChanged(auth, () => {
 });
 
 export { auth, provider }

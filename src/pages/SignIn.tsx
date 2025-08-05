@@ -16,40 +16,32 @@ function SignIn() {
     const query = new URLSearchParams(location.search);
     const id = query.get("accountId");
     setAccountId(id);
-    console.log("[FlexOAuth] accountId from query:", id);
   }, [location.search]);
 
-  useEffect(() => {
-    console.log("[FlexOAuth] error state changed:", error);
-  }, [error]);
+  useEffect(() => {}, [error]);
 
-  useEffect(() => {
-    console.log("[FlexOAuth] loading state changed:", loading);
-  }, [loading]);
+  useEffect(() => {}, [loading]);
 
-  useEffect(() => {
-    console.log("[FlexOAuth] token state changed:", token);
-  }, [token]);
+  useEffect(() => {}, [token]);
 
-  useEffect(() => {
-    console.log("[FlexOAuth] showOpenButton state changed:", showOpenButton);
-  }, [showOpenButton]);
+  useEffect(() => {}, [showOpenButton]);
 
   const handleSignIn = async () => {
-    console.log("[FlexOAuth] handleSignIn called");
     setLoading(true);
     try {
-      console.log("[FlexOAuth] Initiating Firebase signInWithPopup");
-      const result = await signInWithPopup(auth, provider);
-      console.log("[FlexOAuth] Firebase signInWithPopup successful", {
-        displayName: result.user.displayName,
-        photoURL: result.user.photoURL,
-        email: result.user.email,
-      });
-      const idToken = await result.user.getIdToken();
-      console.log("[FlexOAuth] Token generated", idToken);
-      setToken(idToken);
-      setShowOpenButton(true);
+      // Detect Electron environment and use embedded OAuth if available
+      if ((window as any).api?.auth?.loginGoogle && accountId) {
+        const { idToken, profile } = await (window as any).api.auth.loginGoogle(
+          accountId
+        );
+        setToken(idToken);
+        setShowOpenButton(true);
+      } else {
+        const result = await signInWithPopup(auth, provider);
+        const idToken = await result.user.getIdToken();
+        setToken(idToken);
+        setShowOpenButton(true);
+      }
     } catch (err: any) {
       console.error("[FlexOAuth] Sign-in error:", err);
       if ((err as any).code === "auth/popup-closed-by-user") {
@@ -59,16 +51,13 @@ function SignIn() {
       }
     } finally {
       setLoading(false);
-      console.log("[FlexOAuth] handleSignIn completed");
     }
   };
 
   const handleOpenApp = () => {
-    console.log("[FlexOAuth] handleOpenApp called, token:", token);
     const url = `flexbrowser://auth?token=${encodeURIComponent(token)}${
       accountId ? `&accountId=${encodeURIComponent(accountId)}` : ""
     }`;
-    console.log("[FlexOAuth] Opening Flex Browser via URL", url);
     window.open(url, "_self");
   };
 
