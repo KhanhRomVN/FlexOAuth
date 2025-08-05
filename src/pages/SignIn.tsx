@@ -45,8 +45,10 @@ function SignIn() {
       });
   }, []);
 
-  // Handle Firebase redirect result for Electron OAuth window
+  // Handle Firebase redirect result only when auth redirect is complete
   useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    if (!query.has("accountId")) return;
     getRedirectResult(auth)
       .then((result: any) => {
         if (result?.user) {
@@ -62,7 +64,7 @@ function SignIn() {
         console.error("[FlexOAuth] Redirect error:", err);
         setError(err.message || "Redirect sign-in failed");
       });
-  }, []);
+  }, [location.search]);
 
   const handleSignIn = async () => {
     setLoading(true);
