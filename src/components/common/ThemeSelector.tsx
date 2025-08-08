@@ -4,8 +4,28 @@ const ThemeSelector: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState("light");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // Use chrome.storage.local when available, else fallback to localStorage
+  const storage: any =
+    typeof chrome !== "undefined" && chrome.storage && chrome.storage.local
+      ? chrome.storage.local
+      : {
+          get: (keys: string[], cb: (result: any) => void) => {
+            const result: any = {};
+            keys.forEach((key) => {
+              result[key] = localStorage.getItem(key);
+            });
+            cb(result);
+          },
+          set: (items: Record<string, any>, cb?: () => void) => {
+            Object.entries(items).forEach(([key, val]) => {
+              localStorage.setItem(key, val);
+            });
+            cb && cb();
+          },
+        };
+
   useEffect(() => {
-    chrome.storage.local.get(["theme", "backgroundImage"], (result) => {
+    storage.get(["theme", "backgroundImage"], (result: any) => {
       if (result.theme) {
         setCurrentTheme(result.theme);
         applyTheme(result.theme, result.backgroundImage);
@@ -28,10 +48,10 @@ const ThemeSelector: React.FC = () => {
     setCurrentTheme(theme);
     setShowDropdown(false);
 
-    chrome.storage.local.get("backgroundImage", (result) => {
+    storage.get(["backgroundImage"], (result: any) => {
       const bgImage = result.backgroundImage;
       applyTheme(theme, bgImage);
-      chrome.storage.local.set({ theme });
+      storage.set({ theme });
     });
   };
 

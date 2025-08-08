@@ -37,7 +37,7 @@
     --text-muted: #71717a;
     
     --border-primary: #2d2d2d;
---card-background: var(--background-secondary);
+    --card-background: var(--background-secondary);
     --card-background-dark: var(--background-tertiary);
     --border-secondary: #1e1e1e;
     --border-focus: #3686ff;
@@ -66,7 +66,8 @@
   .card {
     background-color: var(--card-background);
     border-color: var(--border-primary);
-    @apply rounded-lg shadow-sm;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
   .dark .card {
     background-color: var(--card-background-dark);
@@ -74,11 +75,31 @@
   }
   
   .btn-primary {
-    @apply bg-primary hover:bg-primary-hover text-primary-foreground py-2 px-4 rounded transition-colors;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 150ms;
+  }
+  .btn-primary:hover {
+    background-color: var(--primary-hover);
   }
   
   .input-field {
-    @apply w-full px-3 py-2 border border-border-primary dark:border-border-primary-dark rounded bg-background-primary dark:bg-background-primary-dark text-text-primary dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-primary);
+    border-radius: 0.25rem;
+    background-color: var(--background-primary);
+    color: var(--text-primary);
+  }
+  .input-field:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary);
+  }
+  .dark .input-field {
+    background-color: var(--background-primary);
+    color: var(--text-primary);
   }
 }
 
@@ -88,16 +109,22 @@
   }
   
   .scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
-    @apply bg-gray-400 dark:bg-gray-600 rounded-full;
+    background-color: #cbd5e1;
+    border-radius: 9999px;
+  }
+  .dark .scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
   }
   
   .scrollbar-track-transparent::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background-color: transparent;
   }
 }
 
 body {
-  @apply bg-background-primary text-text-primary transition-colors duration-200;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  transition: color 200ms, background-color 200ms;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 

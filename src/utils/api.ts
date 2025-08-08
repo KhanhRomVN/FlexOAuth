@@ -3,7 +3,12 @@ const chrome = window.chrome;
 
 export const getBookmarks = (): Promise<any[]> => {
     return new Promise(resolve => {
-        chrome.bookmarks.getTree(resolve);
+        if (chrome && chrome.bookmarks && chrome.bookmarks.getTree) {
+            chrome.bookmarks.getTree(resolve);
+        } else {
+            // Fallback when bookmarks API unavailable
+            resolve([]);
+        }
     });
 };
 
