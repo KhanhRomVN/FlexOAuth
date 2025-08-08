@@ -1,13 +1,17 @@
-import "./App.css";
-import { Routes, Route } from "react-router-dom";
-import SignIn from "./pages/SignIn";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NewTabPage from "./pages/BookmarkManager";
+import Popup from "./components/popup/Popup";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/sign-in" element={<SignIn />} />
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/newtab" element={<NewTabPage />} />
+        <Route path="/popup" element={<Popup />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
